@@ -2,16 +2,13 @@ import React, { useState, useEffect, useRef, forwardRef, useImperativeHandle } f
 import {
   View,
   Animated,
-  TextInput,
-  Text,
-  TouchableOpacity,
   TouchableWithoutFeedback,
   Modal
 } from 'react-native'
 import color from '../assets/color'
 import { width, height } from '../assets/size'
 
-const Slide = React.forwardRef((props, ref) => {
+const Slide = forwardRef((props, ref) => {
   const time = props.time
   const [onSlide, setOnSlide] = useState(false)
   _animatedSlide = new Animated.Value(onSlide ? 0 : 1)
@@ -29,37 +26,36 @@ const Slide = React.forwardRef((props, ref) => {
     })
   }
 
-  useEffect(() => {
-    let value = 0
-    if (onSlide) {
-      value = 1
-    }
-    onChangeSlide(value)
-  }, [onSlide])
 
-  onChangeSlide = (value) => {
+  handleOpen = async () => {
+    await setOnSlide(true)
     Animated.timing(_animatedSlide, {
-      toValue: value,
+      toValue: 1,
       duration: time,
       useNativeDriver: false
     }).start()
   }
 
-  onOpen = () => {
-    setOnSlide(true)
-  }
-
-  onClose = () => {
-    onChangeSlide(0)
-    setTimeout(() => setOnSlide(false), time)
+  handleClose = (callback) => {
+    Animated.timing(_animatedSlide, {
+      toValue: 0,
+      duration: time,
+      useNativeDriver: false
+    }).start()
+    setTimeout(async () => {
+      setOnSlide(false)
+      if (callback !== undefined) {
+        await callback()
+      }
+    }, time)
   }
 
   useImperativeHandle(ref, () => ({
     open: () => {
-      onOpen()
+      handleOpen()
     },
     close: () => {
-      onClose()
+      handleClose()
     }
   }))
 
@@ -67,7 +63,7 @@ const Slide = React.forwardRef((props, ref) => {
     <Modal animationType='none' transparent={true} visible={onSlide}>
       <TouchableWithoutFeedback
         onPress={() => {
-          onClose()
+          handleClose()
         }}
       >
         <View style={{

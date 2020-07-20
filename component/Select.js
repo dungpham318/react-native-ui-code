@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useImperativeHandle, forwardRef } from 'react'
 import {
   View,
   Text,
@@ -12,32 +12,40 @@ import {
   Image,
   Animated
 } from 'react-native'
-
 import color from '../assets/color'
 import { width, height } from '../assets/size'
-const Select = (props) => {
+import ErrorView from './common/ErrorView'
+import Label from './common/Label'
+
+const Select = forwardRef((props, ref) => {
   let [showSelect, setShowSelect] = useState(false)
   let [selectedItem, setSelectedItem] = useState(
     props.defaultValue !== undefined ? props.defaultValue : undefined
   );
   const { listItem } = props
   _animatedSlideUp = new Animated.Value(showSelect ? 0 : 1);
-
   const time = props.time
+  let [error, setError] = useState('')
 
-  // useEffect(() => {
-  //   if (showSelect) {
-  //     handleOpen()
-  //   } else {
-  //     handleClose()
-  //   }
-  // }, [showSelect])
+  useImperativeHandle(ref, () => ({
+    error: (key, content) => {
+      if (key === props.id) {
+        setError(content)
+        return false
+      }
+    },
+    clearError: (key) => {
+      if (key === props.id) {
+        setError('')
+      }
+    }
+  }))
 
   handleOpen = async () => {
     await setShowSelect(true)
     Animated.timing(_animatedSlideUp, {
       toValue: 1,
-      duration: 300,
+      duration: time,
       useNativeDriver: false
     }).start()
   }
@@ -45,12 +53,14 @@ const Select = (props) => {
   handleClose = (callback) => {
     Animated.timing(_animatedSlideUp, {
       toValue: 0,
-      duration: 300,
+      duration: time,
       useNativeDriver: false
     }).start()
     setTimeout(async () => {
       setShowSelect(false)
-      await callback()
+      if (callback !== undefined) {
+        await callback()
+      }
     }, time)
   }
 
@@ -86,33 +96,67 @@ const Select = (props) => {
   };
 
 
-
+  let borderColor = '#EFEFEF'
+  if (showSelect) {
+    borderColor = '#007AFF'
+  }
+  if (error !== '') {
+    borderColor = 'red'
+  }
 
   return (
     <View style={[styles.container, props.style]}>
+      {/* {props.label && <Label size={props.size} label={props.label} isRequired={props.isRequired} />} */}
       <TouchableOpacity
         style={{
-          borderBottomColor: selectedItem === undefined ? color.placeholder : color.normal,
-          borderBottomWidth: 2,
+          borderColor: borderColor,
+          borderWidth: 1,
+          borderRadius: 10,
           flexDirection: 'row',
         }}
         onPress={() => handleOpen()}
       >
-        <Text style={{
-          paddingVertical: 10,
-          paddingRight: 15,
-          paddingLeft: 5,
-          color: selectedItem === undefined ? color.placeholder : color.normalText,
-          fontSize: props.size
-        }}>
-          {selectedItem !== undefined ? selectedItem.label : props.placeholder}
-        </Text>
+        <View>
+
+          {
+            selectedItem !== undefined &&
+            <Text style={{
+              color: color.label,
+              fontSize: props.size * 0.7,
+              top: 5,
+              left: 10,
+            }}>
+              {props.placeholder}
+            </Text>
+          }
+
+
+          <Text style={{
+            // paddingVertical: props.size,
+            paddingTop: selectedItem === undefined ? props.size : (props.size * 0.7),
+            paddingBottom: selectedItem === undefined ? props.size : (props.size * 0.7 - 5),
+            paddingRight: 50,
+            paddingLeft: 10,
+            fontSize: props.size,
+            color: selectedItem === undefined ? color.placeholder : color.normalText,
+            fontSize: props.size
+          }}>
+            {selectedItem !== undefined ? selectedItem.label : props.placeholder}
+          </Text>
+        </View>
+
         <Image
-          style={styles.icon}
+          style={{
+            resizeMode: 'contain',
+            height: props.size,
+            alignSelf: 'center',
+            right: 5,
+            position: 'absolute'
+          }}
           source={require('../assets/images/ic_arrowdown.png')}
         />
       </TouchableOpacity>
-
+      {error !== '' && <ErrorView error={error} />}
       <Modal animationType='none' transparent={true} visible={showSelect}>
         <TouchableWithoutFeedback
           onPress={() => { handleClose() }}>
@@ -123,89 +167,95 @@ const Select = (props) => {
             justifyContent: 'flex-end',
             alignItem: 'center',
           }}>
-            <Animated.View
-              disabled={true}
-              style={{
-                transform: [{
-                  translateY: _animatedSlideUp.interpolate({
-                    inputRange: [0, 1],
-                    outputRange: [1000, 0],
-                  })
-                }],
-                width: '100%',
-                backgroundColor: '#ffffff',
-                alignSelf: 'center',
-                borderRadius: 15,
-                maxHeight: height * 0.5,
-                minHeight: height * 0.2,
-              }}>
-              <View
+            <TouchableWithoutFeedback>
+
+              <Animated.View
+                disabled={true}
                 style={{
-                  borderBottomWidth: 0.5,
-                  width: width,
-                  justifyContent: 'center',
-                  borderColor: color.placeholder,
-                  flexDirection: 'row'
-                }}>
-                <View>
-                  <Text
-                    style={{
-                      fontSize: props.size,
-                      paddingVertical: 15,
-                      alignSelf: 'center',
-                      color: color.normalText,
-                      fontWeight: 'bold'
-                    }}>
-                    {props.placeholder}
-                  </Text>
-                </View>
-                <TouchableOpacity
-                  style={{
-                    justifyContent: 'center',
-                    position: 'absolute',
-                    right: 10,
-                    height: '100%'
-                  }}
-                  onPress={() => setShowSelect(!showSelect)}
-                >
-                  <Image
-                    style={{
-                    }}
-                    source={require('../assets/images/ic_close.png')}
-                  />
-                </TouchableOpacity>
-              </View>
-              <FlatList
-                showsVerticalScrollIndicator={false}
-                data={listItem}
-                keyExtractor={(item, index) => { index.toString() }}
-                renderItem={(item, index) => renderItem(item, index)}
-                style={{
+                  transform: [{
+                    translateY: _animatedSlideUp.interpolate({
+                      inputRange: [0, 1],
+                      outputRange: [1000, 0],
+                    })
+                  }],
                   width: '100%',
-                  alignSelf: 'center',
                   backgroundColor: '#ffffff',
-                  width: '100%',
-                  maxHeight: height * 0.4,
-                }}
-                contentContainerStyle={{
-                  alignItems: 'center',
-                }}
-              />
-            </Animated.View>
+                  alignSelf: 'center',
+                  borderRadius: 15,
+                  maxHeight: height * 0.5,
+                  minHeight: height * 0.2,
+                }}>
+                <View
+                  style={{
+                    borderBottomWidth: 0.5,
+                    width: width,
+                    justifyContent: 'center',
+                    borderColor: color.placeholder,
+                    flexDirection: 'row'
+                  }}>
+                  <View>
+                    <Text
+                      style={{
+                        fontSize: props.size,
+                        paddingVertical: 15,
+                        alignSelf: 'center',
+                        color: color.normalText,
+                        fontWeight: 'bold'
+                      }}>
+                      {props.placeholder}
+                    </Text>
+                  </View>
+                  <TouchableOpacity
+                    style={{
+                      justifyContent: 'center',
+                      position: 'absolute',
+                      right: 10,
+                      height: '100%'
+                    }}
+                    onPress={() => handleClose()}
+                  >
+                    <Image
+                      style={{
+                      }}
+                      source={require('../assets/images/ic_close.png')}
+                    />
+                  </TouchableOpacity>
+                </View>
+                <FlatList
+                  showsVerticalScrollIndicator={false}
+                  data={listItem}
+                  keyExtractor={(item, index) => { index.toString() }}
+                  renderItem={(item, index) => renderItem(item, index)}
+                  style={{
+                    width: '100%',
+                    alignSelf: 'center',
+                    backgroundColor: '#ffffff',
+                    width: '100%',
+                    maxHeight: height * 0.4,
+                  }}
+                  contentContainerStyle={{
+                    alignItems: 'center',
+                  }}
+                />
+              </Animated.View>
+            </TouchableWithoutFeedback>
+
           </View>
         </TouchableWithoutFeedback>
       </Modal>
     </View>
 
   )
-}
+})
 
 Select.defaultProps = {
   placeholder: 'Select an item',
   type: 'normal',
   size: 16,
   time: 300,
-  onChooseItem: () => { }
+  onChooseItem: () => { },
+  label: '',
+  isRequired: false
   // styles: StyleSheet.create({
   //   container: {
   //     width: '100%'
@@ -221,11 +271,7 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   icon: {
-    resizeMode: 'contain',
-    height: '40%',
-    alignSelf: 'center',
-    right: 5,
-    position: 'absolute'
+
   }
 })
 

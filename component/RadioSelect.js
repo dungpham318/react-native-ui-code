@@ -18,7 +18,6 @@ const RadioSelect = (props) => {
 
   useEffect(
     () => {
-      console.warn(selectedData)
     }, [selectedData]
   )
   const itemView = (item) => {

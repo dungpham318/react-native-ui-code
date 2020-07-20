@@ -36,7 +36,10 @@ class App extends React.Component {
 
   constructor(props) {
     super(props);
-    this.slide = React.createRef()
+    this.slide1 = React.createRef()
+    this.slide2 = React.createRef()
+    this.select1 = React.createRef()
+    this.select2 = React.createRef()
   }
 
   render() {
@@ -49,22 +52,23 @@ class App extends React.Component {
         }}>
         <View
           style={{
-            width: '70%',
+            width: '100%',
             flex: 1,
+            paddingHorizontal: 30,
             justifyContent: 'center',
           }}>
 
           <TouchableOpacity
             onPress={() => {
-              this.slide.current.open()
+              this.slide1.current.open()
             }}
           >
             <Text>
-              textfhuewfhewu
+              11111111
           </Text>
           </TouchableOpacity>
           <Slide
-            ref={this.slide}
+            ref={this.slide1}
             type='up'
             position='flex-end'
           >
@@ -75,15 +79,15 @@ class App extends React.Component {
                 backgroundColor: 'red'
               }}
             >
-              <Text>ffewfewfewfewf</Text>
+              <Text>11111111</Text>
 
               <TouchableOpacity
                 onPress={() => {
-                  this.slide.current.close()
+                  this.slide1.current.close()
                 }}
               >
                 <Text>
-                  textfhuewfhewu
+                  11111111
                 </Text>
               </TouchableOpacity>
               {/* <Switcher
@@ -92,15 +96,55 @@ class App extends React.Component {
             </View>
           </Slide>
 
+          <TouchableOpacity
+            onPress={() => {
+              this.slide2.current.open()
+            }}
+          >
+            <Text>
+              222222222
+          </Text>
+          </TouchableOpacity>
+          <Slide
+            ref={this.slide2}
+            type='up'
+            position='flex-end'
+          >
+            <View
+              style={{
+                width: Dimensions.get('window').width * 0.9,
+                height: 200,
+                backgroundColor: 'red'
+              }}
+            >
+              <Text>22222222222</Text>
 
-          <View style={{ marginVertical: 40 }}></View>
+              <TouchableOpacity
+                onPress={() => {
+                  this.slide2.current.close()
+                }}
+              >
+                <Text>
+                  22222222222
+                </Text>
+              </TouchableOpacity>
+              {/* <Switcher
+                size={20}
+              /> */}
+            </View>
+          </Slide>
+          {/* <View style={{ marginVertical: 40 }}></View> */}
 
-          <View style={{ marginVertical: 40 }}></View>
+          {/* <View style={{ marginVertical: 40 }}></View> */}
 
-          <Switcher
+          {/* <Switcher
             color="red"
             size={20}
           />
+          <Switcher
+            color="red"
+            size={20}
+          /> */}
 
           {/* <RadioSelect
             size={20}
@@ -126,6 +170,14 @@ class App extends React.Component {
             listItem={[
               { label: 'Item 111', value: '1' },
               { label: 'Item 222', value: '2' },
+            ]}
+          />
+
+          {/* <Select
+            size={20}
+            listItem={[
+              { label: 'Item 111', value: '1' },
+              { label: 'Item 222', value: '2' },
               { label: 'Item 333', value: '3' },
               { label: 'Item 444', value: '4' },
               { label: 'Item 111', value: '1' },
@@ -134,6 +186,19 @@ class App extends React.Component {
               { label: 'Item 444', value: '4' }
             ]}
           />
+          <Select
+            size={20}
+            listItem={[
+              { label: 'Item 111', value: '1' },
+              { label: 'Item 222', value: '2' },
+              { label: 'Item 333', value: '3' },
+              { label: 'Item 444', value: '4' },
+              { label: 'Item 111', value: '1' },
+              { label: 'Item 222', value: '2' },
+              { label: 'Item 333', value: '3' },
+              { label: 'Item 444', value: '4' }
+            ]}
+          /> */}
         </View>
       </View>
     );
