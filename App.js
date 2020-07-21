@@ -36,8 +36,6 @@ class App extends React.Component {
 
   constructor(props) {
     super(props);
-    this.slide1 = React.createRef()
-    this.slide2 = React.createRef()
     this.select1 = React.createRef()
     this.select2 = React.createRef()
   }
@@ -63,9 +61,46 @@ class App extends React.Component {
               <Switcher />
             </View>
             <View style={{ paddingVertical: 20 }}>
+              <Switcher />
+            </View>
+            <View style={{ paddingVertical: 20 }}>
               <TextField
+                id={1}
                 size={20}
-                type="normal"
+                placeholder="23213212131"
+                clearButton={true}
+              />
+            </View>
+            <View style={{ paddingVertical: 20 }}>
+              <TextField
+                id={3}
+                size={18}
+                type="border"
+                placeholder="23213212131"
+                clearButton={true}
+                textStyle={{
+                }}
+                multiline
+              />
+            </View>
+            <View style={{ paddingVertical: 20 }}>
+              <Select
+                ref={this.select1}
+                listItem={[
+                  { label: "Item 1", value: 1 },
+                  { label: "Item 2", value: 2 },
+                  { label: "Item 3", value: 3 }
+                ]}
+              />
+            </View>
+            <View style={{ paddingVertical: 20 }}>
+              <Select
+                ref={this.select2}
+                listItem={[
+                  { label: "Item 3", value: 1 },
+                  { label: "Item 3", value: 2 },
+                  { label: "Item 3", value: 3 }
+                ]}
               />
             </View>
           </ScrollView>

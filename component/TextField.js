@@ -1,9 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   View,
   Animated,
   TextInput,
-  Text
+  Text,
+  Image,
+  TouchableOpacity
 } from 'react-native'
 import color from '../assets/color'
 const TextField = (props) => {
@@ -16,14 +18,22 @@ const TextField = (props) => {
     editable,
     style,
     time,
-    type
+    type,
+    clearButton,
+    textStyle,
+    autoFocus,
+    onFocus,
+    onBlur,
+    multiline,
+    numberOfLines
   } = props
   const [isFocused, setIsFocused] = useState(false)
   const [value, setValue] = useState('')
 
-  _animatedIsFocused = new Animated.Value(isFocused ? 0 : 1)
-  _animatedLabel = new Animated.Value((isFocused || value !== '') ? 0 : 1)
-
+  // _animatedIsFocused = new Animated.Value(isFocused ? 1 : 0)
+  // _animatedLabel = new Animated.Value((isFocused || value !== '') ? 1 : 0)
+  _animatedIsFocused = useRef(new Animated.Value(0)).current
+  _animatedLabel = useRef(new Animated.Value(0)).current
   useEffect(() => {
     if (value === '') {
       (value !== '' || isFocused) ? animatedLabel(1) : animatedLabel(0)
@@ -32,6 +42,8 @@ const TextField = (props) => {
   }, [isFocused])
 
   animatedFocus = value => {
+    console.log(_animatedIsFocused, _animatedLabel)
+
     Animated.timing(_animatedIsFocused, {
       toValue: value,
       duration: time,
@@ -40,7 +52,6 @@ const TextField = (props) => {
   }
 
   animatedLabel = value => {
-    console.warn(value)
     Animated.timing(_animatedLabel, {
       toValue: value,
       duration: time,
@@ -52,7 +63,7 @@ const TextField = (props) => {
     left: 0,
     top: _animatedLabel.interpolate({
       inputRange: [0, 1],
-      outputRange: [size * 1.5, 0],
+      outputRange: [type === "border" ? size : size * 1.5, size * 0.1],
     }),
     fontSize: _animatedLabel.interpolate({
       inputRange: [0, 1],
@@ -60,22 +71,38 @@ const TextField = (props) => {
     }),
     color: _animatedLabel.interpolate({
       inputRange: [0, 1],
-      outputRange: ['#aaa', '#000'],
+      outputRange: ['#ccc', '#7F8890'],
     }),
   }
+
+
 
   const styleNormal = {
     borderBottomWidth: isFocused ? 0 : 1,
   }
-
+  const styleBorder = {
+    borderWidth: 1,
+    borderColor: isFocused ? color.normal : '#ccc',
+    minHeight: size * 3.5,
+    justifyContent: 'center',
+    paddingHorizontal: 10,
+    borderRadius: 5,
+  }
   return (
-    <View style={[{ width: '100%' }, style,]}>
+    <View style={[{
+      width: '100%',
+      minHeight: size * 2,
+      justifyContent: 'center',
+    }, style, type === 'border' && styleBorder]}>
       <Animated.Text style={labelStyle}>
         {label}
       </Animated.Text>
 
       <TextInput
-        placeholder={label === '' ? '' : placeholder}
+        multiline={multiline}
+        numberOfLines={numberOfLines}
+        autoFocus={autoFocus}
+        placeholder={isFocused ? placeholder : ''}
         editable={editable}
         defaultValue={defaultValue}
         onChangeText={(text) => {
@@ -85,17 +112,21 @@ const TextField = (props) => {
         value={value}
         style={[{
           paddingVertical: size * 0.5,
+          paddingTop: size * 0.5,
           fontSize: size,
           borderColor: '#ccc',
-        },
+          paddingRight: type === 'normal' ? size * 2 : size * 1.7
+        }, textStyle,
         type === 'normal' && styleNormal
         ]}
         keyboardType={props.numeric ? 'numeric' : ''}
-        onFocus={() => {
-          setIsFocused(true)
+        onFocus={async () => {
+          await setIsFocused(true)
+          onFocus()
         }}
-        onBlur={() => {
-          setIsFocused(false)
+        onBlur={async () => {
+          await setIsFocused(false)
+          onBlur()
         }}
       />
       {
@@ -115,6 +146,35 @@ const TextField = (props) => {
           }}
         ></Animated.View>
       }
+
+      {
+        (clearButton && value !== '') &&
+        <TouchableOpacity
+          onPress={() => {
+            setValue('')
+            onChangeText('')
+          }}
+          style={{
+            width: size * 0.9,
+            height: size * 0.9,
+            backgroundColor: '#EFEFEF',
+            padding: size * 0.8,
+            justifyContent: 'center',
+            alignItems: 'center',
+            borderRadius: size,
+            marginLeft: size * 0.4,
+            position: 'absolute',
+            right: 10
+          }}>
+          <Image
+            style={{
+              width: size * 0.5,
+            }}
+            resizeMode='contain'
+            source={require('../assets/images/ic_times.png')}
+          />
+        </TouchableOpacity>
+      }
     </View>
   )
 }
@@ -124,11 +184,19 @@ TextField.defaultProps = {
   label: 'Input text',
   size: 20,
   defaultValue: '',
-  onChangeText: (text) => { },
   editable: true,
-  time: 200,
+  time: 150,
   numeric: false,
-  type: 'normal'
+  type: 'normal',
+  clearButton: false,
+
+
+  autoFocus: false,
+  onChangeText: (text) => { },
+  onFocus: () => { },
+  onBlur: () => { },
+  multiline: false,
+  numberOfLines: 1
 }
 
 export default TextField

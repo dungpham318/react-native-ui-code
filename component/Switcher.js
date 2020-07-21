@@ -20,7 +20,7 @@ const Switcher = (props) => {
   } = props
   const [isChoose, setIsChoose] = useState(defaultValue)
 
-  _animatedIsChoose = new Animated.Value(isChoose ? 0 : 1)
+  _animatedIsChoose = useRef(new Animated.Value(0)).current
 
   useEffect(() => {
     onChange(isChoose)

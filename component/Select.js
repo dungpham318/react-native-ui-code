@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useImperativeHandle, forwardRef } from 'react'
+import React, { useState, useEffect, useImperativeHandle, forwardRef, useRef } from 'react'
 import {
   View,
   Text,
@@ -23,7 +23,8 @@ const Select = forwardRef((props, ref) => {
     props.defaultValue !== undefined ? props.defaultValue : undefined
   );
   const { listItem } = props
-  _animatedShowSelect = new Animated.Value(showSelect ? 0 : 1);
+  // _animatedShowSelect = new Animated.Value(showSelect ? 0 : 1);
+  _animatedShowSelect = useRef(new Animated.Value(0)).current
   const time = props.time
   let [error, setError] = useState('')
 
@@ -42,7 +43,7 @@ const Select = forwardRef((props, ref) => {
   }))
 
   useEffect(() => {
-    console.log(showSelect)
+    console.log(props.listItem)
   }, [showSelect])
 
   handleOpen = async () => {
@@ -258,7 +259,8 @@ Select.defaultProps = {
   time: 300,
   onChooseItem: () => { },
   label: '',
-  isRequired: false
+  isRequired: false,
+  listItem: []
   // styles: StyleSheet.create({
   //   container: {
   //     width: '100%'
