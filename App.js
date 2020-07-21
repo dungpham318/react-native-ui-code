@@ -49,157 +49,28 @@ class App extends React.Component {
           alignItems: 'center',
           justifyContent: 'center',
           flex: 1,
+          width: '100%',
         }}>
-        <View
-          style={{
-            width: '100%',
-            flex: 1,
-            paddingHorizontal: 30,
-            justifyContent: 'center',
-          }}>
-
-          <TouchableOpacity
-            onPress={() => {
-              this.slide1.current.open()
-            }}
-          >
-            <Text>
-              11111111
-          </Text>
-          </TouchableOpacity>
-          <Slide
-            ref={this.slide1}
-            type='up'
-            position='flex-end'
-          >
-            <View
-              style={{
-                width: Dimensions.get('window').width * 0.9,
-                height: 200,
-                backgroundColor: 'red'
-              }}
-            >
-              <Text>11111111</Text>
-
-              <TouchableOpacity
-                onPress={() => {
-                  this.slide1.current.close()
-                }}
-              >
-                <Text>
-                  11111111
-                </Text>
-              </TouchableOpacity>
-              {/* <Switcher
-                size={20}
-              /> */}
+        <SafeAreaView style={{ flex: 1, width: '100%', }}>
+          <ScrollView
+            style={{
+              width: '100%',
+              flex: 1,
+              paddingHorizontal: 10,
+              paddingVertical: 20,
+            }}>
+            <View style={{ paddingVertical: 20 }}>
+              <Switcher />
             </View>
-          </Slide>
-
-          <TouchableOpacity
-            onPress={() => {
-              this.slide2.current.open()
-            }}
-          >
-            <Text>
-              222222222
-          </Text>
-          </TouchableOpacity>
-          <Slide
-            ref={this.slide2}
-            type='up'
-            position='flex-end'
-          >
-            <View
-              style={{
-                width: Dimensions.get('window').width * 0.9,
-                height: 200,
-                backgroundColor: 'red'
-              }}
-            >
-              <Text>22222222222</Text>
-
-              <TouchableOpacity
-                onPress={() => {
-                  this.slide2.current.close()
-                }}
-              >
-                <Text>
-                  22222222222
-                </Text>
-              </TouchableOpacity>
-              {/* <Switcher
+            <View style={{ paddingVertical: 20 }}>
+              <TextField
                 size={20}
-              /> */}
+                type="normal"
+              />
             </View>
-          </Slide>
-          {/* <View style={{ marginVertical: 40 }}></View> */}
+          </ScrollView>
+        </SafeAreaView>
 
-          {/* <View style={{ marginVertical: 40 }}></View> */}
-
-          {/* <Switcher
-            color="red"
-            size={20}
-          />
-          <Switcher
-            color="red"
-            size={20}
-          /> */}
-
-          {/* <RadioSelect
-            size={20}
-            position="left"
-            listItem={
-              [
-                { label: 'Item 111', value: '1' },
-                { label: 'Item 222', value: '2' },
-                { label: 'Item 333', value: '3' },
-                { label: 'Item 444', value: '4' }
-              ]
-            }
-          /> */}
-
-          {/* <ScrollView>
-            <TextField
-              type='normal'
-            />
-
-          </ScrollView> */}
-          <Select
-            size={20}
-            listItem={[
-              { label: 'Item 111', value: '1' },
-              { label: 'Item 222', value: '2' },
-            ]}
-          />
-
-          {/* <Select
-            size={20}
-            listItem={[
-              { label: 'Item 111', value: '1' },
-              { label: 'Item 222', value: '2' },
-              { label: 'Item 333', value: '3' },
-              { label: 'Item 444', value: '4' },
-              { label: 'Item 111', value: '1' },
-              { label: 'Item 222', value: '2' },
-              { label: 'Item 333', value: '3' },
-              { label: 'Item 444', value: '4' }
-            ]}
-          />
-          <Select
-            size={20}
-            listItem={[
-              { label: 'Item 111', value: '1' },
-              { label: 'Item 222', value: '2' },
-              { label: 'Item 333', value: '3' },
-              { label: 'Item 444', value: '4' },
-              { label: 'Item 111', value: '1' },
-              { label: 'Item 222', value: '2' },
-              { label: 'Item 333', value: '3' },
-              { label: 'Item 444', value: '4' }
-            ]}
-          /> */}
-        </View>
       </View>
     );
   }

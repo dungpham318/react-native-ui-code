@@ -69,17 +69,7 @@ const TextField = (props) => {
   }
 
   return (
-    <View
-      style={[{
-        width: '100%',
-
-        // borderWidth: 0.5,
-        // borderColor: color.placeholder,
-        // paddingHorizontal: size,
-        // justifyContent: 'center',
-      }, style,
-      ]}
-    >
+    <View style={[{ width: '100%' }, style,]}>
       <Animated.Text style={labelStyle}>
         {label}
       </Animated.Text>

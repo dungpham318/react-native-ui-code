@@ -4,5 +4,5 @@ export default {
   placeholder: '#ccc',
   normalText: '#1A232C',
   popupBackground: '#00000036',
-  label: '#444'
+  label: '#777'
 }

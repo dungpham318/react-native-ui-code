@@ -23,7 +23,7 @@ const Select = forwardRef((props, ref) => {
     props.defaultValue !== undefined ? props.defaultValue : undefined
   );
   const { listItem } = props
-  _animatedSlideUp = new Animated.Value(showSelect ? 0 : 1);
+  _animatedShowSelect = new Animated.Value(showSelect ? 0 : 1);
   const time = props.time
   let [error, setError] = useState('')
 
@@ -41,9 +41,13 @@ const Select = forwardRef((props, ref) => {
     }
   }))
 
+  useEffect(() => {
+    console.log(showSelect)
+  }, [showSelect])
+
   handleOpen = async () => {
     await setShowSelect(true)
-    Animated.timing(_animatedSlideUp, {
+    Animated.timing(_animatedShowSelect, {
       toValue: 1,
       duration: time,
       useNativeDriver: false
@@ -51,7 +55,7 @@ const Select = forwardRef((props, ref) => {
   }
 
   handleClose = (callback) => {
-    Animated.timing(_animatedSlideUp, {
+    Animated.timing(_animatedShowSelect, {
       toValue: 0,
       duration: time,
       useNativeDriver: false
@@ -132,7 +136,6 @@ const Select = forwardRef((props, ref) => {
 
 
           <Text style={{
-            // paddingVertical: props.size,
             paddingTop: selectedItem === undefined ? props.size : (props.size * 0.7),
             paddingBottom: selectedItem === undefined ? props.size : (props.size * 0.7 - 5),
             paddingRight: 50,
@@ -173,7 +176,7 @@ const Select = forwardRef((props, ref) => {
                 disabled={true}
                 style={{
                   transform: [{
-                    translateY: _animatedSlideUp.interpolate({
+                    translateY: _animatedShowSelect.interpolate({
                       inputRange: [0, 1],
                       outputRange: [1000, 0],
                     })
