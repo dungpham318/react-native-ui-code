@@ -61,7 +61,7 @@ class App extends React.Component {
               <Switcher />
             </View>
             <View style={{ paddingVertical: 20 }}>
-              <Switcher />
+              <Switcher color="red" />
             </View>
             <View style={{ paddingVertical: 20 }}>
               <TextField
