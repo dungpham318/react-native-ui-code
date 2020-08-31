@@ -26,14 +26,25 @@ const Slide = forwardRef((props, ref) => {
     })
   }
 
+  useEffect(() => {
+    if (onSlide) {
+      Animated.timing(_animatedSlide, {
+        toValue: 1,
+        duration: time,
+        useNativeDriver: false
+      }).start()
+    } else {
+
+    }
+  }, [onSlide])
 
   handleOpen = async () => {
     await setOnSlide(true)
-    Animated.timing(_animatedSlide, {
-      toValue: 1,
-      duration: time,
-      useNativeDriver: false
-    }).start()
+    // Animated.timing(_animatedSlide, {
+    //   toValue: 1,
+    //   duration: time,
+    //   useNativeDriver: false
+    // }).start()
   }
 
   handleClose = (callback) => {

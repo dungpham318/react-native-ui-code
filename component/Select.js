@@ -39,20 +39,30 @@ const Select = forwardRef((props, ref) => {
       if (key === props.id) {
         setError('')
       }
+    },
+    info: () => {
     }
   }))
 
   useEffect(() => {
-    console.log(props.listItem)
+    if (showSelect) {
+      Animated.timing(_animatedShowSelect, {
+        toValue: 1,
+        duration: time,
+        useNativeDriver: false
+      }).start()
+    } else {
+
+    }
   }, [showSelect])
 
   handleOpen = async () => {
-    await setShowSelect(true)
-    Animated.timing(_animatedShowSelect, {
-      toValue: 1,
-      duration: time,
-      useNativeDriver: false
-    }).start()
+    // await setShowSelect(true)
+    // Animated.timing(_animatedShowSelect, {
+    //   toValue: 1,
+    //   duration: time,
+    //   useNativeDriver: false
+    // }).start()
   }
 
   handleClose = (callback) => {
@@ -119,7 +129,9 @@ const Select = forwardRef((props, ref) => {
           borderRadius: 10,
           flexDirection: 'row',
         }}
-        onPress={() => handleOpen()}
+        onPress={async () => {
+          await setShowSelect(true)
+        }}
       >
         <View>
 

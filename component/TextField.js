@@ -42,8 +42,6 @@ const TextField = (props) => {
   }, [isFocused])
 
   animatedFocus = value => {
-    console.log(_animatedIsFocused, _animatedLabel)
-
     Animated.timing(_animatedIsFocused, {
       toValue: value,
       duration: time,
